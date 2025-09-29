@@ -1,6 +1,5 @@
-
+ 
 typedef int KEY_TYPE;
-
 
 #define RBTREE_ENTRY(name, type)
     struct name{
@@ -77,4 +76,68 @@ void rbtree_right_rotate(rbtree *T, rbtree_node *y) {
 //3
     x->right = y;
     y->parent = x;
+}
+
+void rbtree_insert_fixup(rbtree *T, rbtree_node *z) {
+    
+    //z == RED
+
+    while(z->parent->color == "RED") {
+        if(z->parent = z->parent->parent->left) {
+            rbtree_node *y = z->parent->parent->right;
+
+            if(y->color == "RED") {
+
+                z->parent->color = "BLACK";
+                y->color = "BLACK";
+                z->parent->parnt->color = "RED";
+
+                z = z->parent->parent; //z == RED
+            } else { // y->color = BLACK
+                
+                if(z == z->parent->right) {
+                    
+                    z = z->parent;
+                    rbtree_left_rotate(T, z);
+                }
+
+                    z->parent->color = "BLACK";
+                    z->parent->parent->color = "RED";
+
+                    rbtree_right_rotate(T, z->parent->parent);
+
+                }
+                    
+                    
+
+            }   
+        }
+}
+
+void rbtree_insert(rbtree *T, rbtree_node *z) {
+
+    rbtree_node *y = T->nil;
+    rbtree_node *x = T->root;
+
+    //遍历树
+    while(x != T->nil)
+    {
+        if(z->key < x->key) { x = x->left; }
+        else if(z->key > x->key) { x = x->right; }
+        else { return ; } //相等的情况看业务场景
+    }
+
+    if(y == T->nil) { T->root = z; }
+    else {
+        if(y->key > z->key) { y->left = z; }
+        else { y->right = z; }
+    }
+
+    z->parent = y;
+
+    z->left = T->nil;
+    z->right = T->nil;
+    z->color = "RED";
+
+    rbtree_insert_fixup(T, z);
 }
